@@ -89,7 +89,7 @@ class Component():
         self.props['classes'] = str(classes)
         return self
     
-    def styles(self, style: str):
+    def style(self, style: str):
         self.props['style'] = str(style)
         return self
 
