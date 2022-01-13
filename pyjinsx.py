@@ -127,7 +127,11 @@ class ContentOnly(Component):
 
     def __init__(self, contents: str, **kwargs):
         _tag = self._validated_tag()
-        _template_override = f'<{_tag}{Component._ID_CLASS_STYLES_TEMPLATE}>' + '{{contents}}' + f'</{_tag}>'
+        
+        if 'template_override' in kwargs.keys():
+            _template_override = kwargs.pop('template_override')
+        else:
+            _template_override = f'<{_tag}{Component._ID_CLASS_STYLES_TEMPLATE}>' + '{{contents}}' + f'</{_tag}>'
 
         super().__init__(template_override= _template_override, **kwargs)
         self._add_props({
