@@ -39,53 +39,53 @@ Provide location for jinja2 to look for templates. The default location is a `te
 ## Examples
 ### Basic usage
 ```python
-    from pyjinsx import Div, Link 
+from pyjinsx import Div, Link 
 
-    div = Div(f'Here is my {Link("repository!", "https://github.com/g-parki/pyjinsx")}', id="mydiv")
-    print(div)
+div = Div(f'Here is my {Link("repository!", "https://github.com/g-parki/pyjinsx")}', id="mydiv")
+print(div)
 
-    # Output:
-    # <div id="mydiv">Here is my <a href="https://github.com/g-parki/pyjinsx">repository!</a></div>
+# Output:
+# <div id="mydiv">Here is my <a href="https://github.com/g-parki/pyjinsx">repository!</a></div>
 ```
 ### Convenience syntax for setting id, classes, or style
 ```python
-    from pyjinsx import P 
+from pyjinsx import P 
 
-    p = P('Content goes here').id('paragraph1').classes('align-left large')
-    print(p)
+p = P('Content goes here').id('paragraph1').classes('align-left large')
+print(p)
 
-    # Output:
-    # <p id="paragraph1" class="align-left large">Content goes here</p>
+# Output:
+# <p id="paragraph1" class="align-left large">Content goes here</p>
 ```
 ### Custom component
 ```python
-    from pyjinsx import Component
+from pyjinsx import Component
 
-    class Project(Component):
+class Project(Component):
 
-        # Name of template in templates folder
-        template_path = '_project.html'
+    # Name of template in templates folder
+    template_path = '_project.html'
 
-        # List all required fields
-        def __init__(
-            self,
-            title: str,
-            demo: str,
-            subheading: str,
-            repository: str,
-            description: str,
-            **kwargs
-        ):
-            # Pass leftover keyword arguments to Component
-            super().__init__(**kwargs)
-            # Provide data to template through props
-            self._add_props({
-                'title': title,
-                'demo': demo,
-                'subheading': subheading,
-                'repository': repository,
-                'description': description,
-            })
-    
-    project = Project(title='', demo='', subheading='', repository='', description='').render()
+    # List all required fields
+    def __init__(
+        self,
+        title: str,
+        demo: str,
+        subheading: str,
+        repository: str,
+        description: str,
+        **kwargs
+    ):
+        # Pass leftover keyword arguments to Component
+        super().__init__(**kwargs)
+        # Provide data to template through props
+        self._add_props({
+            'title': title,
+            'demo': demo,
+            'subheading': subheading,
+            'repository': repository,
+            'description': description,
+        })
+
+project = Project(title='', demo='', subheading='', repository='', description='').render()
 ```
