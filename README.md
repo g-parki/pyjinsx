@@ -23,6 +23,7 @@ Lightweight Python templating library for common HTML components.
 | Image   | src, alt        | id, style, classes, template_path, template_override, head_scripts, base_scripts      |
 | Link   | href, contents        | id, style, classes, template_path, template_override, head_scripts, base_scripts     |
 | Div   | contents        | id, style, classes, template_path, template_override, head_scripts, base_scripts      |
+| P   | contents        | id, style, classes, template_path, template_override, head_scripts, base_scripts      |
 | ComponentCollection   | collections        | id, style, classes, template_path, template_override, head_scripts, base_scripts      |
 
 ## Public Methods:
@@ -38,13 +39,23 @@ Provide location for jinja2 to look for templates. The default location is a `te
 ## Examples
 ### Basic usage
 ```python
-    from pyjinsx import Div, Link
+    from pyjinsx import Div, Link 
 
-    link = Link("https://github.com/g-parki/pyjinsx", "repository!") 
+    div = Div(f'Here is my {Link("repository!", "https://github.com/g-parki/pyjinsx")}', id="mydiv")
+    print(div)
 
-    print(Div(f'Here is my {link}'))
+    # Output:
+    # <div id="mydiv">Here is my <a href="https://github.com/g-parki/pyjinsx">repository!</a></div>
+```
+### Convenience syntax for setting id, classes, or style
+```python
+    from pyjinsx import P 
 
-    # <div>Here is my <a href="https://github.com/g-parki/pyjinsx">repository!</a></div>
+    p = P('Content goes here').id('paragraph1').classes('align-left large')
+    print(p)
+
+    # Output:
+    # <p id="paragraph1" class="align-left large">Content goes here</p>
 ```
 ### Custom component
 ```python

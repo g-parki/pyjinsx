@@ -75,9 +75,23 @@ class Component():
         else:
             return self.env.get_template(_path or self.template_path)
 
-
     def __str__(self):
         return self.render()
+
+    # ----------------
+    # Prop-setting API
+    # ----------------
+    def id(self, id: str):
+        self.props['id'] = str(id)
+        return self
+    
+    def classes(self, classes: str):
+        self.props['classes'] = str(classes)
+        return self
+    
+    def styles(self, style: str):
+        self.props['style'] = str(style)
+        return self
 
 class Image(Component):
 
@@ -94,22 +108,47 @@ class Link(Component):
     
     template_override = '<a' + Component._ID_CLASS_STYLES_TEMPLATE + ' href="{{href}}">{{contents}}</a>'
 
-    def __init__(self, href: str, contents: str, **kwargs):
+    def __init__(self, contents: str, href: str, **kwargs):
         super().__init__(template_override= self.template_override, **kwargs)
         self._add_props({
             'href': href,
             'contents': contents,
         })
 
-class Div(Component):
-    
-    template_override = '<div' + Component._ID_CLASS_STYLES_TEMPLATE + '>{{contents}}</div>'
+class ContentOnly(Component):
+    """
+    Base class for components with no required metadata, but with required content.
+
+    The `tag` must be set in each inheriting class.
+
+    """
+
+    tag: str = ''
 
     def __init__(self, contents: str, **kwargs):
-        super().__init__(template_override= self.template_override, **kwargs)
+        _tag = self._validated_tag()
+        _template_override = f'<{_tag}{Component._ID_CLASS_STYLES_TEMPLATE}>' + '{{contents}}' + f'</{_tag}>'
+
+        super().__init__(template_override= _template_override, **kwargs)
         self._add_props({
             'contents': contents,
         })
+
+    @classmethod
+    def _get_tag(cls):
+        return cls.tag
+
+    def _validated_tag(self):
+        _tag = self._get_tag()
+        if not _tag:
+            raise ValueError(f'Tag is not set in class {self.__class__.__name__}.')
+        return _tag
+
+class Div(ContentOnly):
+    tag = 'div'
+
+class P(ContentOnly):
+    tag = 'p'
 
 class ComponentCollection(Component):
     """
