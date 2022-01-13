@@ -35,3 +35,10 @@ def test_convenience_syntax():
     output = '<p id="id" class="my-class" style="my styles">Text</p>'
     p = P("Text").classes("my-class").id("id").style("my styles").render()
     assert(p == output)
+
+def test_no_templates():
+    template_path = os.path.join(os.getcwd(), 'templates')
+    assert(not os.path.isdir(template_path))
+
+    with pytest.raises(AttributeError):
+        _ = Component().render()
