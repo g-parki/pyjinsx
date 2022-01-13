@@ -21,6 +21,16 @@ def test_p():
     p = P("Text", style="my style").render()
     assert(p == output)
 
+def test_code():
+    output = '<code>y=mx + b</code>'
+    code = Code('y=mx + b').render()
+    assert(code == output)
+
+def test_span():
+    output = '<span style="display: block;">Content</span>'
+    span = Span('Content', style="display: block;").render()
+    assert(span == output)
+
 def test_template_override():
     my_div = Div("world", template_override="Hello {{contents}}").render()
     assert(my_div == "Hello world")

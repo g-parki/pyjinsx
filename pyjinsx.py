@@ -154,6 +154,12 @@ class Div(ContentOnly):
 class P(ContentOnly):
     tag = 'p'
 
+class Code(ContentOnly):
+    tag = 'code'
+
+class Span(ContentOnly):
+    tag= 'span'
+
 class ComponentCollection(Component):
     """
     Base class for a component with one or more collections of other components. This is used
