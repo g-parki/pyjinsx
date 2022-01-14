@@ -31,6 +31,13 @@ def test_span():
     span = Span('Content', style="display: block;").render()
     assert(span == output)
 
+def test_component_internal():
+    output = '<span><div>contents</div></span>'
+    div = Div("contents")
+    span = Span(div).render()
+    assert(span == output)
+
+
 def test_template_override():
     my_div = Div("world", template_override="Hello {{contents}}").render()
     assert(my_div == "Hello world")

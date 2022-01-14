@@ -125,7 +125,7 @@ class ContentOnly(Component):
 
     tag: str = ''
 
-    def __init__(self, contents: str, **kwargs):
+    def __init__(self, contents: Union[str, Component], **kwargs):
         _tag = self._validated_tag()
         
         if 'template_override' in kwargs.keys():
@@ -135,7 +135,7 @@ class ContentOnly(Component):
 
         super().__init__(template_override= _template_override, **kwargs)
         self._add_props({
-            'contents': contents,
+            'contents': str(contents),
         })
 
     @classmethod
@@ -159,6 +159,18 @@ class Code(ContentOnly):
 
 class Span(ContentOnly):
     tag= 'span'
+
+class B(ContentOnly):
+    tag= 'b'
+
+class I(ContentOnly):
+    tag= 'i'
+
+class Sub(ContentOnly):
+    tag= 'sub'
+
+class Sup(ContentOnly):
+    tag= 'sup'
 
 class ComponentCollection(Component):
     """
