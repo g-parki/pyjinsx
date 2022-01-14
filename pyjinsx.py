@@ -1,6 +1,6 @@
 from jinja2 import Environment, FileSystemLoader, Template
 import os
-from typing import Union, Iterable
+from typing import Union, Iterable, Dict
 
 def template_paths(template_path: Union[str, Iterable[str]]) -> None:
     """Provide path to folder containing templates."""
@@ -63,7 +63,7 @@ class Component():
         with open(filename, "w") as f:
             f.writelines(self.render())
 
-    def _add_props(self, props: dict[str, any]):
+    def _add_props(self, props: Dict[str, any]):
         self.props = {
             **self.props,
             **props,
@@ -185,7 +185,7 @@ class ComponentCollection(Component):
     
     template_path = ''
 
-    def __init__(self, collections: dict[str, Iterable[Component]], **kwargs):
+    def __init__(self, collections: Dict[str, Iterable[Component]], **kwargs):
         super().__init__(**kwargs)
         self._process_collections(collections)
 
@@ -194,7 +194,7 @@ class ComponentCollection(Component):
             self.head_scripts = list(set([*component.head_scripts, *self.head_scripts]))
             self.base_scripts = list(set([*component.base_scripts, *self.base_scripts]))
 
-    def _process_collections(self, collections: dict[str, Iterable[Component]]):
+    def _process_collections(self, collections: Dict[str, Iterable[Component]]):
         for key, collection in collections.items():
             self._add_props({
                 key: [str(item) for item in collection]
