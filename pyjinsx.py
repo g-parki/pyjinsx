@@ -2,47 +2,51 @@ from jinja2 import Environment, FileSystemLoader, Template
 import os
 from typing import Union, Iterable, Dict
 
+
 def template_paths(template_path: Union[str, Iterable[str]]) -> None:
     """Provide path to folder containing templates."""
 
     Component.env = Environment(
-        loader= FileSystemLoader(template_path),
-        trim_blocks= True,
-        lstrip_blocks= True,
+        loader=FileSystemLoader(template_path),
+        trim_blocks=True,
+        lstrip_blocks=True,
     )
 
-class Component():
+
+class Component:
     """
     Base class for renderable components.
 
     The default location for templates is a `templates` folder of current directory.
-    
+
     A template name must be provided either by an inheriting class or by an instance at runtime. The template
     can be either a filename in the environment (using `template_path`)
     or a literal string template (using `template_override`).
 
     Each child class passes arguments to the template through its `props`. This is done
     through the `_add_props()` method.
-    
+
     """
 
     env = Environment(
-        loader= FileSystemLoader(os.path.join(os.getcwd(), 'templates')),
-        trim_blocks= True,
-        lstrip_blocks= True,
+        loader=FileSystemLoader(os.path.join(os.getcwd(), "templates")),
+        trim_blocks=True,
+        lstrip_blocks=True,
     )
     template_path: str
-    _ID_CLASS_STYLES_TEMPLATE = '{% if id %} id="{{id}}"{% endif %}'\
-                                '{% if classes %} class="{{classes}}"'\
-                                '{% endif %}{% if style %} style="{{style}}"{% endif %}'
+    _ID_CLASS_STYLES_TEMPLATE = (
+        '{% if id %} id="{{id}}"{% endif %}'
+        '{% if classes %} class="{{classes}}"'
+        '{% endif %}{% if style %} style="{{style}}"{% endif %}'
+    )
 
     def __init__(
         self,
-        id= None,
-        style= None,
-        classes= None,
-        template_path: str = '',
-        template_override: str = '',
+        id=None,
+        style=None,
+        classes=None,
+        template_path: str = "",
+        template_override: str = "",
         head_scripts: Iterable[str] = [],
         base_scripts: Iterable[str] = [],
     ):
@@ -51,11 +55,11 @@ class Component():
         self.head_scripts = head_scripts
         self.base_scripts = base_scripts
         self.props = {
-            'id': id,
-            'style': style,
-            'classes': classes,
+            "id": id,
+            "style": style,
+            "classes": classes,
         }
-    
+
     def render(self):
         return self.template.render(**self.props)
 
@@ -68,7 +72,7 @@ class Component():
             **self.props,
             **props,
         }
-    
+
     def _get_template(self, _path, _override):
         if _override:
             return Template(_override)
@@ -82,38 +86,49 @@ class Component():
     # Prop-setting API
     # ----------------
     def id(self, id: str):
-        self.props['id'] = str(id)
+        self.props["id"] = str(id)
         return self
-    
+
     def classes(self, classes: str):
-        self.props['classes'] = str(classes)
+        self.props["classes"] = str(classes)
         return self
-    
+
     def style(self, style: str):
-        self.props['style'] = str(style)
+        self.props["style"] = str(style)
         return self
+
 
 class Image(Component):
 
-    template_override = '<img' + Component._ID_CLASS_STYLES_TEMPLATE + ' src="{{src}}" alt="{{alt}}">'
+    template_override = (
+        "<img" + Component._ID_CLASS_STYLES_TEMPLATE + ' src="{{src}}" alt="{{alt}}">'
+    )
 
     def __init__(self, src: str, alt: str, **kwargs):
-        super().__init__(template_override = self.template_override, **kwargs)
-        self._add_props({
-            'src': src,
-            'alt': alt,
-        })
+        super().__init__(template_override=self.template_override, **kwargs)
+        self._add_props(
+            {
+                "src": src,
+                "alt": alt,
+            }
+        )
+
 
 class Link(Component):
-    
-    template_override = '<a' + Component._ID_CLASS_STYLES_TEMPLATE + ' href="{{href}}">{{contents}}</a>'
+
+    template_override = (
+        "<a" + Component._ID_CLASS_STYLES_TEMPLATE + ' href="{{href}}">{{contents}}</a>'
+    )
 
     def __init__(self, contents: str, href: str, **kwargs):
-        super().__init__(template_override= self.template_override, **kwargs)
-        self._add_props({
-            'href': href,
-            'contents': contents,
-        })
+        super().__init__(template_override=self.template_override, **kwargs)
+        self._add_props(
+            {
+                "href": href,
+                "contents": contents,
+            }
+        )
+
 
 class ContentOnly(Component):
     """
@@ -123,20 +138,26 @@ class ContentOnly(Component):
 
     """
 
-    tag: str = ''
+    tag: str = ""
 
     def __init__(self, contents: Union[str, Component], **kwargs):
         _tag = self._validated_tag()
-        
-        if 'template_override' in kwargs.keys():
-            _template_override = kwargs.pop('template_override')
-        else:
-            _template_override = f'<{_tag}{Component._ID_CLASS_STYLES_TEMPLATE}>' + '{{contents}}' + f'</{_tag}>'
 
-        super().__init__(template_override= _template_override, **kwargs)
-        self._add_props({
-            'contents': str(contents),
-        })
+        if "template_override" in kwargs.keys():
+            _template_override = kwargs.pop("template_override")
+        else:
+            _template_override = (
+                f"<{_tag}{Component._ID_CLASS_STYLES_TEMPLATE}>"
+                + "{{contents}}"
+                + f"</{_tag}>"
+            )
+
+        super().__init__(template_override=_template_override, **kwargs)
+        self._add_props(
+            {
+                "contents": str(contents),
+            }
+        )
 
     @classmethod
     def _get_tag(cls):
@@ -145,32 +166,41 @@ class ContentOnly(Component):
     def _validated_tag(self):
         _tag = self._get_tag()
         if not _tag:
-            raise ValueError(f'Tag is not set in class {self.__class__.__name__}.')
+            raise ValueError(f"Tag is not set in class {self.__class__.__name__}.")
         return _tag
 
+
 class Div(ContentOnly):
-    tag = 'div'
+    tag = "div"
+
 
 class P(ContentOnly):
-    tag = 'p'
+    tag = "p"
+
 
 class Code(ContentOnly):
-    tag = 'code'
+    tag = "code"
+
 
 class Span(ContentOnly):
-    tag= 'span'
+    tag = "span"
+
 
 class B(ContentOnly):
-    tag= 'b'
+    tag = "b"
+
 
 class I(ContentOnly):
-    tag= 'i'
+    tag = "i"
+
 
 class Sub(ContentOnly):
-    tag= 'sub'
+    tag = "sub"
+
 
 class Sup(ContentOnly):
-    tag= 'sup'
+    tag = "sup"
+
 
 class ComponentCollection(Component):
     """
@@ -182,8 +212,8 @@ class ComponentCollection(Component):
     A template must be provided either by an inheriting class or by an instance at runtime.
 
     """
-    
-    template_path = ''
+
+    template_path = ""
 
     def __init__(self, collections: Dict[str, Iterable[Component]], **kwargs):
         super().__init__(**kwargs)
@@ -196,8 +226,5 @@ class ComponentCollection(Component):
 
     def _process_collections(self, collections: Dict[str, Iterable[Component]]):
         for key, collection in collections.items():
-            self._add_props({
-                key: [str(item) for item in collection]
-            })
+            self._add_props({key: [str(item) for item in collection]})
             self._collect_scripts(collection)
-    
