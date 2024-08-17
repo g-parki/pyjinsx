@@ -1,5 +1,6 @@
-from ..pyjinsx import *
 import pytest
+
+from ..pyjinsx import *
 
 
 def test_image():

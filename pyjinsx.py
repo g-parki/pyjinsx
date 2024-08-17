@@ -1,6 +1,7 @@
-from jinja2 import Environment, FileSystemLoader, Template
 import os
-from typing import Union, Iterable, Dict
+from typing import Any, Dict, Iterable, Optional, Union
+
+from jinja2 import Environment, FileSystemLoader, Template
 
 
 def template_paths(template_path: Union[str, Iterable[str]]) -> None:
@@ -47,10 +48,13 @@ class Component:
         classes=None,
         template_path: str = "",
         template_override: str = "",
-        head_scripts: Iterable[str] = [],
-        base_scripts: Iterable[str] = [],
+        head_scripts: Optional[Iterable[str]] = None,
+        base_scripts: Optional[Iterable[str]] = None,
     ):
-
+        if head_scripts is None:
+            head_scripts = list()
+        if base_scripts is None:
+            base_scripts = list()
         self.template = self._get_template(template_path, template_override)
         self.head_scripts = head_scripts
         self.base_scripts = base_scripts
@@ -67,13 +71,13 @@ class Component:
         with open(filename, "w") as f:
             f.writelines(self.render())
 
-    def _add_props(self, props: Dict[str, any]):
+    def _add_props(self, props: Dict[str, Any]):
         self.props = {
             **self.props,
             **props,
         }
 
-    def _get_template(self, _path, _override):
+    def _get_template(self, _path: str, _override: str):
         if _override:
             return Template(_override)
         else:
